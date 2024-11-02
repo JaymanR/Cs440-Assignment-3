@@ -62,7 +62,6 @@ class GridWorld:
                 (bx + x, by + y) for x, y in [(-1, 0), (1, 0), (0, -1), (0, 1)]
                 if 0 <= bx + x < 13 and 0 <= by + y < 13
                 and self.grid[bx + x][by + y] != 'O'
-                and (bx + x, by + y) != self.robot_pos
             ]
             if possible_moves:
                 self.bull_pos = random.choice(possible_moves)
