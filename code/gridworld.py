@@ -42,23 +42,30 @@ class GridWorld:
         bx, by = self.bull_pos
         rx, ry = self.robot_pos
 
+        manhattan_distance = abs(bx - rx) + abs(by - ry)
+
         if abs(bx - rx) <= 2 and abs(by - ry) <= 2:
-            possible_moves = [(bx + x, by + y) for x, y in [(-1, 0), (1, 0), (0, -1), (0, 1)]]
             possible_moves = [
-                move for move in possible_moves
-                if 0 <= move[0] < 13 and 0 <= move[1] < 13
-                and move != self.robot_pos and self.grid[move[0]][move[1]] != 'O'
+                (bx + x, by + y) for x, y in [(-1, 0), (1, 0), (0, -1), (0, 1)]
+                if (0 <= bx + x < 13 and 0 <= by + y < 13)
+                and self.grid[bx + x][by + y] != 'O'
+                and (bx + x, by + y) != self.robot_pos
+                and abs(bx + x - rx) + abs(by + y - ry) <= manhattan_distance
             ]
-            self.bull_pos = min(possible_moves, key=lambda pos: abs(pos[0] - rx) + abs(pos[1] - ry), default=self.bull_pos)
+
+            if possible_moves:
+                self.bull_pos = min(possible_moves, key=lambda pos: abs(pos[0] - rx) + abs(pos[1] - ry))
+            else:
+                pass
         else:
-            possible_moves = [(bx + x, by + y) for x, y in [(-1, 0), (1, 0), (0, -1), (0, 1)]]
             possible_moves = [
-                move for move in possible_moves
-                if 0 <= move[0] < 13 and 0 <= move[1] < 13
-                and move != self.robot_pos and self.grid[move[0]][move[1]] != 'O'
+                (bx + x, by + y) for x, y in [(-1, 0), (1, 0), (0, -1), (0, 1)]
+                if 0 <= bx + x < 13 and 0 <= by + y < 13
+                and self.grid[bx + x][by + y] != 'O'
             ]
             if possible_moves:
                 self.bull_pos = random.choice(possible_moves)
+
 
     def is_game_over(self):
         return self.bull_pos == self.target_pos
